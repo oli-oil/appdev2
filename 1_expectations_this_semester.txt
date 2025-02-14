@@ -1,0 +1,37 @@
+##Assignment #1: Expectations for this Semester
+
+Introduction
+Tell me a little about yourself. What programming languages or technologies do you know? Do you have any experience with backend development or Node.js?
+
+Simply put, all I know about programming or programming languages is their basics: the functionalities, the basic syntactic structures, and some of the logic behind the code. 
+I find any advanced programming techniques kind of challenging and hard for me to understand, maybe because coding or programming isn’t my forte. I know how to utilize some of the technologies accessible today especially if it is within my capabilities to operate, like version control systems, cloud platforms, and other technologies. As mentioned above, I only know the basics of programming, therefore, I do not have inherent experience with backend development, but I believe that with adequate knowledge and training, I can somehow work this out. 
+
+Course Expectations
+What do you want to achieve in this course?
+What specific skills do you hope to learn (e.g., building APIs, using Node.js and Express)?
+How do you think backend development will help you in your career or studies?
+
+Ultimately, I want to achieve a better understanding regarding this course, not to completely comprehend what is going on, to be able to write my code, but at least give myself time to take a moment and absorb the lesson. 
+Because, lately, I found myself struggling to keep up with the rest of the class and meet deadlines, I guess that’s one. A skill that I want to learn is patience, commitment, and consistency. 
+I have a firm belief that I almost can do anything as long as I am committed to every task assigned and do not procrastinate every time, consistent, to the point that I show up and just at least give my 1% effort every day (because it counts), and patient to know that it will take a lot of time to master a certain skill. For me to learn these technical skills, I’d learn first how to manage myself. While it is true that programming is not my forte, I believe that having a pinch of knowledge about this aspect would be helpful for the future career I am aiming to achieve, and of course, backend development will greatly help my studies as it is one of the requirements for the course. 
+
+Challenges and Areas for Improvement 
+Are there any topics that you find difficult or want to improve on (e.g., working with databases, building APIs, error handling)?
+How do you plan to overcome these challenges during the course?
+
+Every task, activity, and Everything can be quite challenging, especially for me, who is not actually adept in these kinds of fields of IT. 
+That being said, I wanted to improve on everything relating to this course as much as possible, but without rushing myself to learn all of that in one sitting because that is humanly impossible. 
+To overcome these challenges, I’ll build my resilience to changes, commitment to tasks, and patience to hone my skills not only for the subject perse but also for myself, since I am ultimately going to benefit from this. Another way to overcome this is to advance the study of a particular topic that poses threats and hindrances to my way of understanding, also, my class has a lot of competent aspiring future IT professionals, so, by asking for their aid and hopefully lending their helping hand might help me get through this course.
+
+Expectations from the Instructor
+What do you expect from me as your instructor to help you succeed in this course?
+Are there any resources, teaching methods, or tools that would help you learn better (e.g., coding examples, tutorials, additional resources)?
+
+As an instructor, you have a high credibility, and a lot of students adore and appreciate all of the things that you do as a very considerate instructor. 
+For you to help po for us succeed in this course is “consideration” in limited aspects of the class, patience as one of the virtues, and your ability to connect with the whole class. 
+Aside from that, Sir. Elmer is top-notch. When it comes to additional resources to loop up on that would help us learn better: more coding examples, recorded tutorials that we’ll definitely watch, and real-case scenarios relating of course to the topic discussed. 
+
+Final Thoughts 
+Anything else you'd like to add about your goals for the course or how you want to learn?
+
+As much as possible, I wanted to learn. Learn not for the sake of passing, learn not for the sake of midterm and final exams, learn not for the sake of the project, but to learn so that when the time comes I’ll leave the campus, I have gained inseparable knowledge that will be utilized for my future profession, God-willing. 
