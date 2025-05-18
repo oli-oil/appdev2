@@ -1,10 +1,10 @@
 {
   "name": "08_simple_book_api",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server.js"
+    "start": "node server.js"
   },
   "keywords": [],
   "author": "",
@@ -12,7 +12,9 @@
   "description": "",
   "dependencies": {
     "dotenv": "^16.5.0",
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "mongodb": "^6.16.0",
+    "mongoose": "^8.15.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"
