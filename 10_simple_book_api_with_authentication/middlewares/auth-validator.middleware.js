@@ -1,24 +1,21 @@
-const Joi = require("joi");
+const jwt = require('jsonwebtoken');
 
-const signInSchema = Joi.object({
-  email: Joi.string()
-    .min(6)
-    .max(30)
-    .required()
-    .email({ tlds: { allow: ["com", "net"] } }),
-  password: Joi.string().required().pattern(new RegExp("^[a-zA-Z0-9]+$")),
-});
+module.exports = async (req, res, next) => {
+    try {
+        const authHeader = req.header('Authorization');
+        if (!authHeader) {
+            return res.status(401).json({ message: 'Access denied. No token provided.' });
+        }
 
-const signUpSchema = Joi.object({
-  email: Joi.string()
-    .min(6)
-    .max(30)
-    .required()
-    .email({ tlds: { allow: ["com", "net"] } }),
-  password: Joi.string().required().pattern(new RegExp("^[a-zA-Z0-9]+$")),
-});
+        const token = authHeader.split(' ')[1]; // Get token from "Bearer TOKEN"
+        if (!token) {
+            return res.status(401).json({ message: 'Access denied. Invalid token format.' });
+        }
 
-module.exports = {
-  signInSchema,
-  signUpSchema,
+        const verified = jwt.verify(token, process.env.JWT_SECRET);
+        req.user = verified;
+        next();
+    } catch (error) {
+        res.status(401).json({ message: 'Invalid token.' });
+    }
 };

@@ -1,77 +1,81 @@
-const Book = require("../models/book.model");
+const Book = require('../models/Book');
 
-const getBooks = async (req, res) => {
-  try {
-    const books = await Book.find({});
-    res.json({ books: books, success: true });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
+// Get all books
+exports.getAllBooks = async (req, res) => {
+    try {
+        const books = await Book.find();
+        res.json(books);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
 };
 
-const getBook = async (req, res) => {
-  const { id } = req.params;
-
-  try {
-    const book = await Book.findById(id);
-    if (!book) return res.json({ success: false, message: "Book not found!" });
-    res.json({ book: book, success: true });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
+// Get single book by ID
+exports.getBookById = async (req, res) => {
+    try {
+        const book = await Book.findById(req.params.id);
+        if (!book) {
+            return res.status(404).json({ message: "Book not found" });
+        }
+        res.json(book);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
 };
 
-const createBook = async (req, res) => {
-  try {
-    const product = await Book.create(req.body);
-    res.json({ success: true, message: "Book is successfully added!" });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
+// Create new book
+exports.createBook = async (req, res) => {
+    try {
+        console.log('Received request body:', req.body);
+        const { title, author } = req.body;
+
+        if (!title || !author) {
+            return res.status(400).json({ message: "Title and author are required", receivedData: req.body });
+        }
+
+        const newBook = new Book({
+            title,
+            author
+        });
+
+        const savedBook = await newBook.save();
+        res.status(201).json(savedBook);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
 };
 
-const updateBook = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const book = await Book.findByIdAndUpdate(id, req.body);
-    if (!book) return res.json({ success: false, message: "Book not found!" });
-    const updatedBook = await Book.findById(id);
-    res.json({ success: true, book: updatedBook });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
+// Update book
+exports.updateBook = async (req, res) => {
+    try {
+        const { title, author } = req.body;
+        const updatedBook = await Book.findByIdAndUpdate(
+            req.params.id,
+            { title, author },
+            { new: true, runValidators: true }
+        );
+
+        if (!updatedBook) {
+            return res.status(404).json({ message: "Book not found" });
+        }
+
+        res.json(updatedBook);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
 };
 
-const deleteBook = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const book = await Book.findByIdAndDelete(id);
-    if (!book) return res.json({ success: false, message: "Book not found!" });
-    res.json({ success: true, message: "Book is successfully deleted!" });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
+// Delete book
+exports.deleteBook = async (req, res) => {
+    try {
+        const deletedBook = await Book.findByIdAndDelete(req.params.id);
+        
+        if (!deletedBook) {
+            return res.status(404).json({ message: "Book not found" });
+        }
 
-module.exports = {
-  getBooks,
-  getBook,
-  createBook,
-  updateBook,
-  deleteBook,
+        res.json({ message: "Book successfully deleted" });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
 };

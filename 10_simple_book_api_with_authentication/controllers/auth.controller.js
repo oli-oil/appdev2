@@ -1,97 +1,121 @@
-const {
-  signInSchema,
-  signUpSchema,
-} = require("../middlewares/auth-validator.middleware");
-const { generateAccessToken } = require("../middlewares/jwt-token.middleware");
-const { doHash, doHashValidation } = require("../utils/hashing.util");
-const users = [
-  {
-    id: 1,
-    email: "tester@test.com",
-    password: "$2b$10$epZ3Vq/slePleoF3KJKGiOi56EMX8FeVTPRpMCNwDEmq.grS3GPzG", // secret123
-  },
-];
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const User = require('../models/User');
+const { signupValidation, signinValidation } = require('../validation/auth.validation');
 
-const signIn = async (req, res) => {
-  const { email, password } = req.body;
+exports.signup = async (req, res) => {
+    try {
+        // Validate request body
+        const { error } = signupValidation.validate(req.body);
+        if (error) {
+            return res.status(400).json({ message: error.details[0].message });
+        }
 
-  const { error } = signInSchema.validate({ email, password });
+        const { username, email, password } = req.body;        // Check if username is taken
+        const existingUsername = await User.findOne({ username });
+        if (existingUsername) {
+            return res.status(400).json({ 
+                status: 'error',
+                message: 'Username is already taken',
+                field: 'username'
+            });
+        }
 
-  if (error) {
-    return res.status(401).json({
-      status: false,
-      message: error.details[0].message,
-    });
-  }
+        // Check if email is taken
+        const existingEmail = await User.findOne({ email });
+        if (existingEmail) {
+            return res.status(400).json({ 
+                status: 'error',
+                message: 'Email is already registered',
+                field: 'email'
+            });
+        }
 
-  const userExist = users.find((user) => user.email === email);
+        // Hash password
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
 
-  if (userExist) {
-    const matchPassword = await doHashValidation(password, userExist.password);
+        // Create new user
+        const user = new User({
+            username,
+            email,
+            password: hashedPassword
+        });
 
-    if (matchPassword) {
-      const token = generateAccessToken(userExist.email);
-      return res.status(200).json({
-        status: true,
-        token: token,
-        message: "You are logged in",
-      });
+        const savedUser = await user.save();
+        res.status(201).json({ 
+            message: 'User created successfully',
+            userId: savedUser._id 
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
-
-    res.status(401).json({
-      status: false,
-      message: "Invalid password",
-    });
-  }
-
-  res.status(401).json({
-    status: false,
-    message: "Invalid credentials",
-  });
 };
 
-const signUp = async (req, res) => {
-  const { email, password } = req.body;
+exports.signin = async (req, res) => {
+    try {
+        // Validate request body
+        const { error } = signinValidation.validate(req.body);
+        if (error) {
+            return res.status(400).json({ 
+                status: 'error',
+                message: error.details[0].message,
+                field: error.details[0].path[0]
+            });
+        }
 
-  const { error } = signUpSchema.validate({ email, password });
+        const { username, email, password } = req.body;
 
-  if (error) {
-    return res.status(401).json({
-      status: false,
-      message: error.details[0].message,
-    });
-  }
+        if (!username && !email) {
+            return res.status(400).json({
+                status: 'error',
+                message: 'Please provide either username or email',
+                field: 'credentials'
+            });
+        }
 
-  const emailExist = users.find((user) => user.email === email);
+        // Find user by username or email
+        const user = await User.findOne(
+            username ? { username } : { email }
+        );
 
-  if (emailExist) {
-    return res.status(200).json({
-      status: true,
-      message: "Email exists",
-    });
-  }
+        if (!user) {
+            return res.status(401).json({ 
+                status: 'error',
+                message: username 
+                    ? 'No user found with this username' 
+                    : 'No user found with this email',
+                field: username ? 'username' : 'email'
+            });
+        }
 
-  const hashedPassword = await doHash(password, 10);
+        // Check password
+        const validPassword = await bcrypt.compare(password, user.password);
+        if (!validPassword) {
+            return res.status(401).json({ 
+                status: 'error',
+                message: 'Invalid password',
+                field: 'password'
+            });
+        }
 
-  const newUser = {
-    id: users.length + 1,
-    email,
-    password: hashedPassword,
-  };
+        // Create and assign token
+        const token = jwt.sign(
+            { _id: user._id, username: user.username },
+            process.env.JWT_SECRET,
+            { expiresIn: '24h' }
+        );
 
-  users.push(newUser);
-  return res.status(201).json({
-    status: true,
-    message: "Account has been created!",
-  });
-};
-
-const getUsers = (req, res) => {
-  res.json(users);
-};
-
-module.exports = {
-  signIn,
-  signUp,
-  getUsers,
+        res.json({
+            message: 'Logged in successfully',
+            token,
+            user: {
+                id: user._id,
+                username: user.username,
+                email: user.email
+            }
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
 };
